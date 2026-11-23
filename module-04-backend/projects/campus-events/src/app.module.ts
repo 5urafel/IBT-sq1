@@ -1,10 +1,11 @@
 // src/app.module.ts
 import { randomUUID } from 'node:crypto';
 import { IncomingMessage } from 'node:http';
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { LoggerModule } from 'nestjs-pino';
 import { AppController } from './app.controller.js';
 import { AppService } from './app.service.js';
+import { LoggerMiddleware } from './common/logger.middleware.js';
 import { EventsModule } from './events/events.module.js';
 
 @Module({
@@ -45,4 +46,8 @@ import { EventsModule } from './events/events.module.js';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(LoggerMiddleware).forRoutes('*');
+  }
+}
