@@ -35,14 +35,6 @@ export class EventsController {
     return this.eventsService.findUpcoming();
   }
 
-  @Get('example')
-  findPage(@Query('page', ParseIntPipe) page: number) {
-    return {
-      page,
-      message: 'Page received successfully',
-    };
-  }
-
   @Get(':id')
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.eventsService.findOne(id);
