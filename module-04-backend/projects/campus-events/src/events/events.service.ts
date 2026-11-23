@@ -2,6 +2,7 @@ import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import {
   CreateEventDto,
   EventSessionDto,
+  QueryEventDto,
   UpdateEventDto,
 } from './dto/event.dto.js';
 import {
@@ -10,7 +11,6 @@ import {
   type EventSession,
   type IEventRepository,
 } from './events.types.js';
-
 import { InjectPinoLogger, PinoLogger } from 'nestjs-pino';
 
 @Injectable()
@@ -22,9 +22,14 @@ export class EventsService {
     private readonly logger: PinoLogger,
   ) {}
 
-  findAll(): CampusEvent[] {
-    this.logger.info('Fetching all campus events');
-    return this.eventRepository.findAll();
+  findAll(query?: QueryEventDto): CampusEvent[] {
+    this.logger.info({ query }, 'Fetching campus events');
+    return this.eventRepository.findAll(query);
+  }
+
+  findUpcoming(): CampusEvent[] {
+    this.logger.info('Fetching upcoming campus events');
+    return this.eventRepository.findUpcoming();
   }
 
   findOne(id: number): CampusEvent {
@@ -36,6 +41,12 @@ export class EventsService {
     return event;
   }
 
+  findSessions(id: number): EventSession[] {
+    this.logger.debug({ eventId: id }, 'Looking up event sessions');
+    const event = this.findOne(id);
+    return event.sessions;
+  }
+
   create(createEventDto: CreateEventDto): CampusEvent {
     const normalizedSessions = this.normalizeSessions(
       createEventDto.sessions ?? [],
@@ -45,8 +56,10 @@ export class EventsService {
       title: createEventDto.title,
       description: createEventDto.description,
       location: createEventDto.location,
-      date: createEventDto.date,
-      organizer: createEventDto.organizer,
+      eventDate: createEventDto.eventDate,
+      category: createEventDto.category,
+      isPublished: createEventDto.isPublished,
+      organizer: createEventDto.organizer ?? 'Campus Event Committee',
       sessions: normalizedSessions,
     });
 
@@ -56,7 +69,6 @@ export class EventsService {
         title: createdEvent.title,
         sessionCount: normalizedSessions.length,
       },
-
       'Campus event created',
     );
     return createdEvent;
@@ -70,7 +82,27 @@ export class EventsService {
       : existingEvent.sessions;
 
     const updated = this.eventRepository.update(id, {
-      ...updateEventDto,
+      ...(updateEventDto.title !== undefined
+        ? { title: updateEventDto.title }
+        : {}),
+      ...(updateEventDto.description !== undefined
+        ? { description: updateEventDto.description }
+        : {}),
+      ...(updateEventDto.location !== undefined
+        ? { location: updateEventDto.location }
+        : {}),
+      ...(updateEventDto.eventDate !== undefined
+        ? { eventDate: updateEventDto.eventDate }
+        : {}),
+      ...(updateEventDto.category !== undefined
+        ? { category: updateEventDto.category }
+        : {}),
+      ...(updateEventDto.isPublished !== undefined
+        ? { isPublished: updateEventDto.isPublished }
+        : {}),
+      ...(updateEventDto.organizer !== undefined
+        ? { organizer: updateEventDto.organizer }
+        : {}),
       sessions: updatedSessions,
     });
 
