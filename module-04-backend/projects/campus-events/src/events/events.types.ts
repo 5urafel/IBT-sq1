@@ -12,16 +12,28 @@ export interface CampusEvent {
   title: string;
   description: string;
   location: string;
-  date: string;
-  organizer: string;
+  eventDate: string;
+  category: string;
+  isPublished: boolean;
+  organizer?: string;
   sessions: EventSession[];
+}
+
+export interface EventQueryFilter {
+  category?: string;
+  isPublished?: boolean;
+  sortBy?: 'eventDate' | 'title' | 'category' | 'id';
+  order?: 'asc' | 'desc';
+  page?: number;
+  limit?: number;
 }
 
 export const EVENT_REPOSITORY = Symbol('EVENT_REPOSITORY');
 
 export interface IEventRepository {
-  findAll(): CampusEvent[];
+  findAll(filter?: EventQueryFilter): CampusEvent[];
   findById(id: number): CampusEvent | undefined;
+  findUpcoming(): CampusEvent[];
   create(event: Omit<CampusEvent, 'id'>): CampusEvent;
   update(
     id: number,

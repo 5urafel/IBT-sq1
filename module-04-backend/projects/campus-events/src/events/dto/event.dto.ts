@@ -1,6 +1,7 @@
-import { Type } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
 import {
   IsArray,
+  IsBoolean,
   IsDateString,
   IsNotEmpty,
   IsNumber,
@@ -54,11 +55,18 @@ export class CreateEventDto {
   location: string;
 
   @IsDateString()
-  date: string;
+  eventDate: string;
 
   @IsString()
   @IsNotEmpty()
-  organizer: string;
+  category: string;
+
+  @IsBoolean()
+  isPublished: boolean;
+
+  @IsString()
+  @IsOptional()
+  organizer?: string;
 
   @IsArray()
   @ValidateNested({ each: true })
@@ -82,7 +90,15 @@ export class UpdateEventDto {
 
   @IsDateString()
   @IsOptional()
-  date?: string;
+  eventDate?: string;
+
+  @IsString()
+  @IsOptional()
+  category?: string;
+
+  @IsBoolean()
+  @IsOptional()
+  isPublished?: boolean;
 
   @IsString()
   @IsOptional()
@@ -93,4 +109,37 @@ export class UpdateEventDto {
   @Type(() => EventSessionDto)
   @IsOptional()
   sessions?: EventSessionDto[];
+}
+
+export class QueryEventDto {
+  @IsString()
+  @IsOptional()
+  category?: string;
+
+  @IsBoolean()
+  @IsOptional()
+  @Transform(({ value }) => {
+    if (value === 'true' || value === true) return true;
+    if (value === 'false' || value === false) return false;
+    return value;
+  })
+  isPublished?: boolean;
+
+  @IsString()
+  @IsOptional()
+  sortBy?: 'eventDate' | 'title' | 'category' | 'id';
+
+  @IsString()
+  @IsOptional()
+  order?: 'asc' | 'desc';
+
+  @IsNumber()
+  @IsOptional()
+  @Type(() => Number)
+  page?: number;
+
+  @IsNumber()
+  @IsOptional()
+  @Type(() => Number)
+  limit?: number;
 }
