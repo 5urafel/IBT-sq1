@@ -6,7 +6,9 @@ export const seedEvents: CampusEvent[] = [
     title: 'Technology Innovation Day',
     description: 'Explore new technologies and student innovations.',
     location: 'Main Campus Hall',
-    date: '2026-12-10',
+    eventDate: '2026-12-10T09:00:00.000Z',
+    category: 'technology',
+    isPublished: true,
     organizer: 'Computer Science Department',
     sessions: [
       {
@@ -32,7 +34,9 @@ export const seedEvents: CampusEvent[] = [
     title: 'Career Development Workshop',
     description: 'Prepare students for professional careers.',
     location: 'Conference Room A',
-    date: '2026-12-15',
+    eventDate: '2026-12-15T09:00:00.000Z',
+    category: 'career',
+    isPublished: true,
     organizer: 'Student Affairs Office',
     sessions: [
       {
@@ -50,6 +54,46 @@ export const seedEvents: CampusEvent[] = [
         speaker: 'Mr. Samuel',
         startTime: '10:30',
         endTime: '11:30',
+      },
+    ],
+  },
+  {
+    id: 3,
+    title: 'Draft Hackathon 2026',
+    description: 'Internal planning session for campus hackathon.',
+    location: 'Lab 4',
+    eventDate: '2026-12-20T10:00:00.000Z',
+    category: 'technology',
+    isPublished: false,
+    organizer: 'Coding Club',
+    sessions: [
+      {
+        id: 1,
+        title: 'Hackathon Ideation',
+        description: 'Brainstorming tracks and challenges.',
+        speaker: 'Club President',
+        startTime: '10:00',
+        endTime: '11:00',
+      },
+    ],
+  },
+  {
+    id: 4,
+    title: 'Alumni Welcome Meet',
+    description: 'Past campus gathering of alumni.',
+    location: 'Auditorium',
+    eventDate: '2026-10-15T14:00:00.000Z',
+    category: 'social',
+    isPublished: true,
+    organizer: 'Alumni Association',
+    sessions: [
+      {
+        id: 1,
+        title: 'Keynote Address',
+        description: 'Reflections and networking.',
+        speaker: 'Dean of Students',
+        startTime: '14:00',
+        endTime: '15:30',
       },
     ],
   },
