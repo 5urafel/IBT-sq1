@@ -7,6 +7,9 @@ import { AppController } from './app.controller.js';
 import { AppService } from './app.service.js';
 import { LoggerMiddleware } from './common/logger.middleware.js';
 import { EventsModule } from './events/events.module.js';
+import { UsersModule } from './users/users.module.js';
+import { AuthModule } from './auth/auth.module.js';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
@@ -41,7 +44,13 @@ import { EventsModule } from './events/events.module.js';
             : undefined,
       },
     }),
+
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
     EventsModule,
+    UsersModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
